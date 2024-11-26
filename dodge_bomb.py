@@ -12,6 +12,10 @@ DELTA = {
     pg.K_LEFT:(-5, 0), 
     pg.K_RIGHT:(+5, 0),
 }
+# accs = [a for a in range(1, 11)] #加速度のリスト
+# for r in range(1, 11): #拡大爆弾Surfaceのリスト
+#     bb_img = pg.Surface((20*r, 20*r))
+#     pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -54,6 +58,16 @@ def game_over(screen: pg.Surface) -> None:
     time.sleep(5)
 
 
+# def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+#     """
+#     サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す
+#     引数:None
+#     """
+    
+
+#     return accs, bomb_surfaces.append
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん") #タイトル
     screen = pg.display.set_mode((WIDTH, HEIGHT)) #screen surface
@@ -76,7 +90,7 @@ def main():
             if event.type == pg.QUIT: 
                 return
         if kk_rct.colliderect(bb_rct):
-            game_over(screen)
+            game_over(screen) #ゲームオーバー関数
             print("ゲームオーバー")
             return #ゲームオーバー
         screen.blit(bg_img, [0, 0])
@@ -97,7 +111,11 @@ def main():
         if not yoko: #横にはみ出てる
             vx *= -1
         if not tate: #縦にはみ出てる
-            vy *= -1 
+            vy *= -1
+        #爆弾拡大
+        #bb_imgs, bb_accs = init_bb_imgs()
+        #avx = vx*bb_accs[min(tmr//500, 9)]
+        #bb_img = bb_imgs[min(tmr//500, 9)]
         screen.blit(bb_img, bb_rct)
         pg.display.update()
         tmr += 1
