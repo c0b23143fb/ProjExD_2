@@ -3,17 +3,17 @@ import sys
 import pygame as pg
 
 
-WIDTH, HEIGHT = 1600, 900
+WIDTH, HEIGHT = 1100, 650 #サイズ
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 def main():
-    pg.display.set_caption("逃げろ！こうかとん")
-    screen = pg.display.set_mode((WIDTH, HEIGHT))
+    pg.display.set_caption("逃げろ！こうかとん") #タイトル
+    screen = pg.display.set_mode((WIDTH, HEIGHT)) #screen surface
     bg_img = pg.image.load("fig/pg_bg.jpg")    
-    kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 2.0)
+    kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     kk_rct = kk_img.get_rect()
-    kk_rct.center = 900, 400
+    kk_rct.center = 300, 200 #初期座標
     clock = pg.time.Clock()
     tmr = 0
     while True:
