@@ -63,8 +63,6 @@ def game_over(screen: pg.Surface) -> None:
 #     サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す
 #     引数:None
 #     """
-    
-
 #     return accs, bomb_surfaces.append
 
 
