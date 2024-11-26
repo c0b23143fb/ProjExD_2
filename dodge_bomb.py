@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
 
 
@@ -28,6 +29,31 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     return yoko, tate
     
 
+def game_over(screen: pg.Surface) -> None:
+    """
+    ゲームオーバー時に、半透明の黒い画面上に「Game Over」と表示し、泣いているこうかとん画像を貼り付ける関数
+    引数:screen Surface
+    """
+    naki_img = pg.image.load("fig/8.png") #泣いてるこうかとん画像
+    naki_img = pg.transform.rotozoom(naki_img, 0, 0.9)
+    haikei = pg.Surface((WIDTH, HEIGHT)) #ゲームオーバーSurface
+    pg.draw.rect(haikei, (0, 0, 0), pg.Rect(0, 0, 1100, 650)) #黒い画面
+    haikei.set_alpha(128) #背景を半透明に
+    fonto = pg.font.Font(None, 80) #font設定
+    txt = fonto.render("Game Over", True, (255, 255, 255)) #文字Surface
+    txt_rct = txt.get_rect() 
+    txt_rct.center = WIDTH/2, HEIGHT/2 #文字の中心をサイズの真ん中に
+    naki_rct = naki_img.get_rect()
+    naki_rct.center = WIDTH/2 - 200, HEIGHT/2 #画面の中心をサイズの真ん中に
+    screen.blit(haikei, [0, 0])
+    screen.blit(txt, txt_rct)
+    screen.blit(naki_img, naki_rct)
+    naki_rct.center = WIDTH/2 + 200, HEIGHT/2 #画面の中心をサイズの真ん中に
+    screen.blit(naki_img, naki_rct)
+    pg.display.update()
+    time.sleep(5)
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん") #タイトル
     screen = pg.display.set_mode((WIDTH, HEIGHT)) #screen surface
@@ -50,6 +76,7 @@ def main():
             if event.type == pg.QUIT: 
                 return
         if kk_rct.colliderect(bb_rct):
+            game_over(screen)
             print("ゲームオーバー")
             return #ゲームオーバー
         screen.blit(bg_img, [0, 0])
