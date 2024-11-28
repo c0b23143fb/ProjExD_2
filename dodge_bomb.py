@@ -71,10 +71,36 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     return bb_surface, accs
 
 
+def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
+    """
+    移動量の合計値タプルに対応する向きの画像Surfaceを返す
+    """
+    kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
+    #押下キーに対する移動量の合計値タプルをキー，rotozoomしたSurfaceを値とした辞書
+    KEY = {
+        (0, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
+        (0, -5): pg.transform.rotozoom(kk_img, 270, 1.0),
+        (+5, -5): pg.transform.rotozoom(kk_img, 315, 1.0),
+        (+5, 0): pg.transform.rotozoom(kk_img, 180, 1.0),
+        (+5, +5): pg.transform.rotozoom(kk_img, 45, 1.0),
+        (0, +5): pg.transform.rotozoom(kk_img, 90, 1.0),
+        (-5, +5): pg.transform.rotozoom(kk_img, 45, 1.0),
+        (-5, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
+        (-5, -5): pg.transform.rotozoom(kk_img, 315, 1.0),
+    }
+    kk_img = KEY[tuple(sum_mv)] #辞書から取ってくる
+    #向きを変える
+    if(tuple(sum_mv)==(0, +5)or(tuple(sum_mv)==(0, -5))or(tuple(sum_mv)==(+5, -5))or(tuple(sum_mv)==(+5, +5))):
+        kk_img = pg.transform.flip(kk_img, True, False)
+    elif(tuple(sum_mv)==(+5, 0)):
+        kk_img = pg.transform.flip(kk_img, False, True)
+    return kk_img
+    
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん") #タイトル
     screen = pg.display.set_mode((WIDTH, HEIGHT)) #screen surface
-    bg_img = pg.image.load("fig/pg_bg.jpg")    
+    bg_img = pg.image.load("fig/pg_bg.jpg") #画像Surface 
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200 #初期座標
@@ -106,6 +132,10 @@ def main():
             if key_lst[key]:
                 sum_mv[0] += tpl[0]
                 sum_mv[1] += tpl[1]
+        kk_img = get_kk_img((0, 0))
+        kk_img = get_kk_img(tuple(sum_mv))
+        print(sum_mv)
+        print(get_kk_img(sum_mv))
         kk_rct.move_ip(sum_mv) #移動させる
         #こうかとんが画面外なら、元の場所に戻す
         if check_bound(kk_rct) != (True, True):
