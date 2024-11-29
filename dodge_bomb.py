@@ -1,3 +1,4 @@
+import math
 import os
 import random
 import sys
@@ -74,6 +75,8 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
 def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
     """
     移動量の合計値タプルに対応する向きの画像Surfaceを返す
+    引数:sum_mvをタプルにしたもの
+    戻り値:こうかとん画像Surface
     """
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     #押下キーに対する移動量の合計値タプルをキー，rotozoomしたSurfaceを値とした辞書
@@ -95,7 +98,20 @@ def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
     elif(tuple(sum_mv)==(+5, 0)):
         kk_img = pg.transform.flip(kk_img, False, True)
     return kk_img
-    
+
+
+def kk_speed(sum_mv: list, tmr: int) -> list:
+    """
+    元のsum_mvの値から、大きくしたsum_mvを返す
+    引数:sum_mv(速度), tmr(フレーム数)
+    戻り値:値を更新したsum_mv
+    """
+    add = 1 #addが0にならないように
+    add += tmr / 400
+    sum_mv[0] = sum_mv[0] * add
+    sum_mv[1] = sum_mv[1] * add
+    return sum_mv
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん") #タイトル
@@ -122,7 +138,6 @@ def main():
         #別のRectオブジェクトと重なっているか判定する      
         if kk_rct.colliderect(bb_rct):
             game_over(screen) #ゲームオーバー関数
-            print("ゲームオーバー")
             return #ゲームオーバー
         screen.blit(bg_img, [0, 0]) #screenにbg_imgのSurfaceを貼りつける
         key_lst = pg.key.get_pressed() #すべてのキーの押下状態を取得する
@@ -133,11 +148,10 @@ def main():
                 sum_mv[0] += tpl[0]
                 sum_mv[1] += tpl[1]
         kk_img = get_kk_img((0, 0))
-        kk_img = get_kk_img(tuple(sum_mv))
-        print(sum_mv)
-        print(get_kk_img(sum_mv))
+        kk_img = get_kk_img(tuple(sum_mv)) #こうかとんの向きを変更
+        sum_mv = kk_speed(sum_mv, tmr)
         kk_rct.move_ip(sum_mv) #移動させる
-        #こうかとんが画面外なら、元の場所に戻す
+        #こうかとんが画面外なら、元の場所に戻す    
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct) #screenにkk_imgのSurfaceを貼りつける
